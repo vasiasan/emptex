@@ -20,9 +20,11 @@
             });
 	}
 
-	$.fn.tsearcher = function(pattern, finded){
+	$.fn.tsearcher = function(re, finded){
+		function rescape(str) {
+		  return (str + '').replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&');
+		}
 		//alert(this.val());
-		var re = RegExp( pattern, "gm" );
 		//appndr.contents().remove();
 		//appndr.contents().empty();
 		var li;
@@ -100,7 +102,7 @@
 		nslctn = $.nslctr(CurPos,finded, direction);
 	        console.log( findarr[0][0], CurPos );
 		//console.log( nslctn );
-		if ( nslctn ) $(".emptex").slctr( nslctn[0], nslctn[0] + nslctn[2].length );
+		if ( nslctn ) text.slctr( nslctn[0], nslctn[0] + nslctn[2].length );
 	}
 })(jQuery);
 
@@ -116,10 +118,26 @@ jQuery(function(){
 	});*/
 	//$(".srchr").click( $(".emptex").tsearcher( $(".search").val(),  ) )
 	//$(".chngr").click( alert( 'Handler for .click() called.' ) );
-	$(".srchr").click( function () { $.searcher( $('.emptex'), $('.resfield'), $(".search").val(), ">" ) } )
-	$(".psrchr").click( function () { $.searcher( $('.emptex'), $('.resfield'), $(".search").val(), "<" ) } )
-	$(".chngr").click( function () { var re = RegExp( $(".search").val(), "gm" );
-					$(".emptex").val( $(".emptex").val().replace(re, $(".replace").val() ) );
+	$(".srchr").click( function () {
+					if ( $(".ignorecase:checked").length )
+						var flags = "gmi";
+					else	var flags = "gm";
+
+					$.searcher( $('.emptex'), $('.resfield'), RegExp( $(".search").val(), flags ), ">" ) } )
+
+	$(".psrchr").click( function () {
+					if ( $(".ignorecase:checked").length )
+						var flags = "gmi";
+					else	var flags = "gm";
+
+					$.searcher( $('.emptex'), $('.resfield'), RegExp( $(".search").val(), flags ), "<" ) } )
+
+	$(".chngr").click( function () {
+					if ( $(".ignorecase:checked").length )
+						var flags = "gmi";
+					else	var flags = "gm";
+
+					$(".emptex").val( $(".emptex").val().replace( RegExp( $(".search").val(), flags ), $(".replace").val() ) );
 	})
 });
 

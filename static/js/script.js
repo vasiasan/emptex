@@ -21,9 +21,6 @@
 	}
 
 	$.fn.tsearcher = function(re, finded){
-		function rescape(str) {
-		  return (str + '').replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&');
-		}
 		//alert(this.val());
 		//appndr.contents().remove();
 		//appndr.contents().empty();
@@ -104,6 +101,15 @@
 		//console.log( nslctn );
 		if ( nslctn ) text.slctr( nslctn[0], nslctn[0] + nslctn[2].length );
 	}
+
+	$.reForm = function ( patt, ic, rec ){
+		var flags = "gm";
+		if ( ic ) flags += "i";
+
+		if (! rec )
+		  return RegExp ( (patt + '').replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&'), flags );
+		return RegExp ( patt, flags );
+	}
 })(jQuery);
 
 jQuery(function(){
@@ -118,26 +124,20 @@ jQuery(function(){
 	});*/
 	//$(".srchr").click( $(".emptex").tsearcher( $(".search").val(),  ) )
 	//$(".chngr").click( alert( 'Handler for .click() called.' ) );
-	$(".srchr").click( function () {
-					if ( $(".ignorecase:checked").length )
-						var flags = "gmi";
-					else	var flags = "gm";
+	$(".srchr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
+					var rec = Boolean( $(".regexp:checked").length );
+					re = $.reForm( $(".search").val(), ic, rec );
+					$.searcher( $('.emptex'), $('.resfield'), re, ">" ) } )
 
-					$.searcher( $('.emptex'), $('.resfield'), RegExp( $(".search").val(), flags ), ">" ) } )
+	$(".psrchr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
+					var rec = Boolean( $(".regexp:checked").length );
+					re = $.reForm( $(".search").val(), ic, rec );
+					$.searcher( $('.emptex'), $('.resfield'), re, "<" ) } )
 
-	$(".psrchr").click( function () {
-					if ( $(".ignorecase:checked").length )
-						var flags = "gmi";
-					else	var flags = "gm";
-
-					$.searcher( $('.emptex'), $('.resfield'), RegExp( $(".search").val(), flags ), "<" ) } )
-
-	$(".chngr").click( function () {
-					if ( $(".ignorecase:checked").length )
-						var flags = "gmi";
-					else	var flags = "gm";
-
-					$(".emptex").val( $(".emptex").val().replace( RegExp( $(".search").val(), flags ), $(".replace").val() ) );
+	$(".chngr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
+					var rec = Boolean( $(".regexp:checked").length );
+					re = $.reForm( $(".search").val(), ic, rec );
+					$(".emptex").val( $(".emptex").val().replace( re, $(".replace").val() ) );
 	})
 });
 

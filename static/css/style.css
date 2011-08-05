@@ -122,7 +122,7 @@ a:hover { color: #036; }
       /*display:none;
       -webkit-box-shadow:0 0px 40px -10px #AAA;
          -moz-box-shadow:0 0px 40px -10px #AAA;
-              box-shadow:0 0px 40px -10px #AAA;	
+              box-shadow:0 0px 40px -10px #AAA; 
               */
 
     }
@@ -131,33 +131,33 @@ a:hover { color: #036; }
       height:100%;
     }
     #collapsible {
-	float:left;
-	height:100%;
-/*	position:absolute;
-	left:-5px;
-	top:0;
-	*/
-	width:3px;
-	overflow:hidden;
-	border:2px solid #fff;
-	border-top:none;
-	border-bottom:none;
-	background:#e5ecf9;
-	cursor:pointer;
+    float:left;
+    height:100%;
+/*  position:absolute;
+    left:-5px;
+    top:0;
+    */
+    width:3px;
+    overflow:hidden;
+    border:2px solid #fff;
+    border-top:none;
+    border-bottom:none;
+    background:#e5ecf9;
+    cursor:pointer;
     }
 
     #collapsible.hover {
-	width:5px;
-	border-color:#d3d9e5;
-	border-width:1px;
+    width:5px;
+    border-color:#d3d9e5;
+    border-width:1px;
     }
 
     .text{
-	width:auto;
-	height:100%;
-	margin-left:307px;
-	display:block;
-	float:none;
+    width:auto;
+    height:100%;
+    margin-left:307px;
+    display:block;
+    float:none;
     }
     .emptex{
       background-color:transparent;
@@ -230,3 +230,4 @@ a:hover { color: #036; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3{ page-break-after: avoid; }
 }
+

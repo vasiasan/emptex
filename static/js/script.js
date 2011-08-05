@@ -92,14 +92,18 @@
 	}
 	$.searcher = function ( text, field, searchpatt, direction ) {
 		var finded = [];
-		var nslctn = [];
 		var CurPos = $.getCurPos(text)
 		text.tsearcher( searchpatt, finded );
 		field.html( finded.join( "<br />" ) );
-		nslctn = $.nslctr(CurPos,finded, direction);
+		var nslctn = $.nslctr(CurPos,finded, direction);
 	        console.log( findarr[0][0], CurPos );
 		//console.log( nslctn );
 		if ( nslctn ) text.slctr( nslctn[0], nslctn[0] + nslctn[2].length );
+		return finded;
+	}
+
+	$.placeRe = function ( to, from ){
+		
 	}
 
 	$.reForm = function ( patt, ic, rec ){
@@ -124,20 +128,23 @@ jQuery(function(){
 	});*/
 	//$(".srchr").click( $(".emptex").tsearcher( $(".search").val(),  ) )
 	//$(".chngr").click( alert( 'Handler for .click() called.' ) );
+	var finded = [];
 	$(".srchr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
-					$.searcher( $('.emptex'), $('.resfield'), re, ">" ) } )
+					finded = $.searcher( $('.emptex'), $('.resfield'), re, ">" ) } )
 
 	$(".psrchr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
-					$.searcher( $('.emptex'), $('.resfield'), re, "<" ) } )
+					finded = $.searcher( $('.emptex'), $('.resfield'), re, "<" ) } )
 
 	$(".chngr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
-					$(".emptex").val( $(".emptex").val().replace( re, $(".replace").val() ) );
+					//$(".emptex").val( $(".emptex").val().replace( re, $(".replace").val() ) );
+					//$('.resfield').html( finded.join( "<br />" ) );
+					console.log(finded)
 	})
 });
 

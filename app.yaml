@@ -18,6 +18,6 @@ handlers:
 
 #INDEX
 - url: /.*
-  static_files: static/regular/index.html
-  upload: static/regular/index.html
+  static_files: static/general/index.html
+  upload: static/general/index.html
 

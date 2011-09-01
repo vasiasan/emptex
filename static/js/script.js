@@ -21,7 +21,6 @@
 	}
 
 	$.fn.tsearcher = function(re, finded){
-		//alert(this.val());
 		//appndr.contents().remove();
 		//appndr.contents().empty();
 		var li;
@@ -34,7 +33,6 @@
 			}
 			li = re.lastIndex;
 			finded.push([ result.index, li, result[0] ]);
-			//console.log(result);
 			//appndr.append('<p>'+ result[0] +' ('+ result.index +')</p>');
 		}
 		return this;
@@ -96,14 +94,84 @@
 		text.tsearcher( searchpatt, finded );
 		field.html( finded.join( "<br />" ) );
 		var nslctn = $.nslctr(CurPos,finded, direction);
-	        console.log( findarr[0][0], CurPos );
-		//console.log( nslctn );
 		if ( nslctn ) text.slctr( nslctn[0], nslctn[0] + nslctn[2].length );
 		return finded;
 	}
 
-	$.placeRe = function ( to, from ){
-		
+	//implicitly use variables ("pattern", "from finded array" and "in text position") inside
+	$.placeRe = function ( repl, from, chngp ){
+				//tsource, from, searchword, to, dir //before restruct
+		//repl // pattern
+		//from //array from finded = [begin, end, finded-text]
+		//chngp // what change * - all, ## - cursor position;
+
+		/*var laste = 0;
+		var tdest = "";
+		for ( var e in from ){
+			tdest += tsource.slice(laste,from[e][0]) + to;
+			laste = from[e][1];
+		}
+		return tdest += tsource.slice(laste);
+		*/
+
+		return function(){
+			//arguments //format - [finded-text, var1, var2, ..., var##, finded-text-position, text]
+			var ft = arguments[0];
+			var te = arguments[arguments.length-1];
+			var ftp = arguments[arguments.length-2];
+			
+			//array of vars of brackets
+			//var vars = Array.prototype.slice.call(arguments).slice(1, arguments.length-2);
+/*
+			for ( var i = vars.length - 1; i >= 0; i-- ){
+				var varre = RegExp("([^\\$]|^)\\$"+(Number(i)+1), "g");
+				repl = repl.replace(varre, "$1"+vars[i]);
+			}
+			
+			repl = repl.replace(/([^\$]|^)\$`/g, "$1"+te.slice(0, ftp ) );
+			repl = repl.replace(/([^\$]|^)\$&/g, "$1"+ft);
+			repl = repl.replace(/([^\$]|^)\$'/g, "$1"+te.slice(0, ftp+ft.length ) );
+			repl = repl.replace(/\$\$/g, '$'); // must be in end because next may replace this to var
+		        console.log(repl);
+			return repl;
+*/
+
+			var ind = 0, fi = 0;
+			console.log( te, ftp, ft );
+			var endrepl = new String;
+			while ( ( ind = repl.indexOf('$', fi ) ) + 1 ){
+				endrepl = endrepl.concat(repl.slice(fi, ind));
+				var nchar = repl[ ind + 1 ];
+				console.log(repl, ind, repl[ind], nchar, fi);
+				if ( nchar >= 0 && nchar <= 9 ){
+					endrepl = endrepl.concat( arguments[ nchar ] );
+					console.log(endrepl);
+					fi = ind + 2;
+					continue;
+				}
+				else
+					switch ( nchar ){
+						case "`":
+							endrepl = endrepl.concat( te.slice(0, ftp ) );
+							fi = ind + 2;
+							continue;
+						case "&":
+							endrepl = endrepl.concat( ft );
+							fi = ind + 2;
+							continue;
+						case "'":
+							endrepl = endrepl.concat( te.slice( ftp  + ft.length ) );
+							fi = ind + 2;
+							continue;
+						case "$":
+							endrepl = endrepl.concat( "$" );
+							fi = ind + 2;
+							continue;
+					}
+			}
+			return endrepl = endrepl.concat( repl.slice(fi) );
+
+		}
 	}
 
 	$.reForm = function ( patt, ic, rec ){
@@ -132,20 +200,24 @@ jQuery(function(){
 	$(".srchr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
-					finded = $.searcher( $('.emptex'), $('.resfield'), re, ">" ) } )
+					finded = $.searcher( $('.emptex'), $('.resfield'), re, ">" );
+				} )
 
 	$(".psrchr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
-					finded = $.searcher( $('.emptex'), $('.resfield'), re, "<" ) } )
+					finded = $.searcher( $('.emptex'), $('.resfield'), re, "<" )
+				} )
 
 	$(".chngr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
-					//$(".emptex").val( $(".emptex").val().replace( re, $(".replace").val() ) );
-					//$('.resfield').html( finded.join( "<br />" ) );
-					console.log(finded)
-	})
+					$('.emptex').tsearcher( re, finded );
+					$(".emptex").val( $(".emptex").val().replace( re, $.placeRe( $(".replace").val() ) ) );
+					$('.resfield').html( finded.join( "<br />" ) );
+					//console.log(finded)
+					//$(".emptex").val($.placeRe( $(".emptex").val(), finded, re, $(".replace").val() ) ) 
+				})
 });
 
 // Left panel

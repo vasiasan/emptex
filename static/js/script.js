@@ -100,19 +100,9 @@
 
 	//implicitly use variables ("pattern", "from finded array" and "in text position") inside
 	$.placeRe = function ( repl, from, chngp ){
-				//tsource, from, searchword, to, dir //before restruct
 		//repl // pattern
 		//from //array from finded = [begin, end, finded-text]
 		//chngp // what change * - all, ## - cursor position;
-
-		/*var laste = 0;
-		var tdest = "";
-		for ( var e in from ){
-			tdest += tsource.slice(laste,from[e][0]) + to;
-			laste = from[e][1];
-		}
-		return tdest += tsource.slice(laste);
-		*/
 
 		return function(){
 			//arguments //format - [finded-text, var1, var2, ..., var##, finded-text-position, text]
@@ -120,32 +110,26 @@
 			var te = arguments[arguments.length-1];
 			var ftp = arguments[arguments.length-2];
 			
-			//array of vars of brackets
-			//var vars = Array.prototype.slice.call(arguments).slice(1, arguments.length-2);
-/*
-			for ( var i = vars.length - 1; i >= 0; i-- ){
-				var varre = RegExp("([^\\$]|^)\\$"+(Number(i)+1), "g");
-				repl = repl.replace(varre, "$1"+vars[i]);
+			if ( chngp != "*" && ftp != chngp[0] ){
+				return ft;
 			}
-			
-			repl = repl.replace(/([^\$]|^)\$`/g, "$1"+te.slice(0, ftp ) );
-			repl = repl.replace(/([^\$]|^)\$&/g, "$1"+ft);
-			repl = repl.replace(/([^\$]|^)\$'/g, "$1"+te.slice(0, ftp+ft.length ) );
-			repl = repl.replace(/\$\$/g, '$'); // must be in end because next may replace this to var
-		        console.log(repl);
-			return repl;
-*/
+			/*for (var i in from){
+				( from[i][0] == ftp ) ? break findInFrom : ;
+			}
+			return ft;
+			findInFrom:
+			*/
 
 			var ind = 0, fi = 0;
-			console.log( te, ftp, ft );
+			//console.log( te, ftp, ft );
 			var endrepl = new String;
 			while ( ( ind = repl.indexOf('$', fi ) ) + 1 ){
 				endrepl = endrepl.concat(repl.slice(fi, ind));
 				var nchar = repl[ ind + 1 ];
-				console.log(repl, ind, repl[ind], nchar, fi);
+				//console.log(repl, ind, repl[ind], nchar, fi);
 				if ( nchar >= 0 && nchar <= 9 ){
 					endrepl = endrepl.concat( arguments[ nchar ] );
-					console.log(endrepl);
+					//console.log(endrepl);
 					fi = ind + 2;
 					continue;
 				}
@@ -212,12 +196,39 @@ jQuery(function(){
 	$(".chngr").click( function () { var ic = Boolean( $(".ignorecase:checked").length );
 					var rec = Boolean( $(".regexp:checked").length );
 					re = $.reForm( $(".search").val(), ic, rec );
+					switch ( $(this).val() ){
+					    case "→":
+						var direction = ">";
+						break;
+					    case "*":
+						var nslctn = "*"
+						break;
+					    case "←":
+						var direction = "<";
+						break;
+					}
+					var CurPos = $.getCurPos( $(".emptex") );
+					
+					var finded = [];
 					$('.emptex').tsearcher( re, finded );
-					$(".emptex").val( $(".emptex").val().replace( re, $.placeRe( $(".replace").val() ) ) );
+					if (! nslctn ) var nslctn = $.nslctr(CurPos,finded, direction);
+					
+					$(".emptex").val( $(".emptex").val().replace( re, $.placeRe( $(".replace").val(), finded, nslctn ) ) );
 					$('.resfield').html( finded.join( "<br />" ) );
-					//console.log(finded)
-					//$(".emptex").val($.placeRe( $(".emptex").val(), finded, re, $(".replace").val() ) ) 
+					console.log( $(this).val(), CurPos, nslctn );
 				})
+	/* // default button for enter on form
+	$(“form input, form select”).live(‘keypress’, function (e) {
+		if ($(this).parents(‘form’).find(‘button[type=submit].default, input[type=submit].default’).length <= 0)
+			return true;
+		if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+			$(this).parents(‘form’).find(‘button[type=submit].default, input[type=submit].default’).click();
+			return false;
+		} else {
+			return true;
+		}
+	});
+	*/
 });
 
 // Left panel

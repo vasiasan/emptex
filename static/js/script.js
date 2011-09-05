@@ -1,3 +1,21 @@
+/*
+function wow() {
+    var i = $('#in'),
+        a = $('#area');
+    var s = i.val();
+    var new_s = String();
+    for (var i = 0; i < s.length; i++){
+        if (s[i] == '\\')
+          switch (s[i + 1]) {
+            case 'n': { new_s += "\n"; i++; continue; }
+            case 't': { new_s += "\t"; i++; continue; }
+          }
+      new_s += s[i];
+    
+    }
+    a.val(new_s);
+}
+*/
 (function($) {
 	$.fn.slctr = function(start, end){
     		//alert(this.val());
@@ -113,12 +131,15 @@
 			if ( chngp != "*" && ftp != chngp[0] ){
 				return ft;
 			}
-			/*for (var i in from){
-				( from[i][0] == ftp ) ? break findInFrom : ;
-			}
-			return ft;
-			findInFrom:
-			*/
+
+			// replace only if it has in finded
+			// because replace in multistring mode change not only finded
+			if ( chngp == "*" )
+			  for (var i in from){
+				( from[i][0] < ftp ) ? continue : ;
+				( from[i][0] == ftp ) ? break : ;
+				( from[i][0] > ftp ) ? return ft : ;
+			  }
 
 			var ind = 0, fi = 0;
 			//console.log( te, ftp, ft );

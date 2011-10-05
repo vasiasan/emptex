@@ -21,9 +21,9 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
 
     <script>!window.jQuery && document.write(unescape('%3Cscript src="js/libs/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
-    <script type="text/javascript" src="js/libs/jquery.textchange.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/script.js"></script>
+    <script type="text/javascript" src="/js/libs/jquery.textchange.min.js"></script>
+    <script src="/js/plugins.js"></script>
+    <script src="/js/script.js"></script>
     <!--[if lt IE 7 ]>
     <script src="js/libs/dd_belatedpng.js"></script>
     <script> DD_belatedPNG.fix('img, .png_bg');</script>
@@ -35,8 +35,12 @@
         s.parentNode.insertBefore(g,s)}(document,'script'));
     </script>
 
-    <link rel="stylesheet" href="css/style.css?v=2">
-    <script src="js/libs/modernizr-1.7.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css?v=2">
+    <script src="/js/libs/modernizr-1.7.min.js"></script>
+    <!--[if IE 6]>
+    	<link rel="stylesheet" type="text/css" href="/css/iehacks.css" />
+    	<script type="text/javascript" src="/js/iehacks.js"></script>
+    <![endif]-->
 </head>
 <body>
     <div id="container">
@@ -44,32 +48,64 @@
 
         </header>
 
-        <div id="main" role="main">
-           <div class="panel">
-             <form>
-               <p>
-               <span class="slabel">Search</span><input class="search" type="text" /> <br />
-                <label><span>Ignore case</span><input type="checkbox" class="ignorecase" /></label>
-                <label><span>Global</span><input type="checkbox" class="global" /></label>
-                <label><span>RegExp</span><input type="checkbox" class="regexp" /></label>
-                <input type="button" value="←" class="psrchr" />
-                <input type="button" value="→" class="srchr" /><br />
-               </p><br />
-               <p>
-               <span class="slabel">Replace</span><input class="replace" type=text /> <br />
-                <input type="button" value="←" class="chngr" />
-                <input type="button" value="*" class="chngr" />
-                <input type="button" value="→" class="chngr" />
-               </p>
-             </form>
-             <div class="resfield">
-             </div>
-           </div>
-           
-           <div id="collapsible"></div>
-
+	<div id="main" role="main">
+	    <div class="panelwrap">
+		<div class="panel">
+		    <div class="status">
+			<div class="half"><span>row: </span><span class="row">0</span></div>
+			<div class="half"><span>col: </span><span class="col">0</span></div>
+		    </div>
+		    <form>
+			<fieldset><legend>Search</legend><p>
+			    <input class="search" type="text" />
+			    <div class="formwrap">
+				<label class="label"><span>Ignore case</span><input type="checkbox" class="ignorecase" /></label>
+				<label class="label"><span>Multiline</span><input type="checkbox" class="multiline" /></label>
+				<label class="label"><span>RegExp</span><input type="checkbox" class="regexp" /></label>
+			    </div>
+			    <div class="formwrap">
+				<input type="button" value="←" class="psrchr" />
+				<input type="button" value="→" class="srchr" />
+			    </div>
+			</fieldset>
+			<fieldset><legend>Replace</legend><p>
+			    <input class="replace" type="text" /> <br />
+			    <div class="formwrap">
+				<input type="button" value="*" class="chngr" />
+				<input type="button" value="←" class="chngr" />
+				<input type="button" value="→" class="chngr" />
+			    </div>
+			</fieldset>
+			<fieldset><legend>Undo-Redo</legend><p>
+			    <div class="formwrap">
+				<input type="button" value="⇐ undo" class="undo" />
+				<input type="button" value="redo ⇒" class="redo" />
+			    </div>
+			</fieldset>
+		        <fieldset><legend>Fonts</legend><p>
+		          <div class="formwrap">
+			    <span class="label">Font:</span>
+			    <select class="fontfamily">
+				<option>Monospace</option>
+				<option>Arial</option>
+				<option>Tahoma</option>
+			    </select>
+			    <span class="label">FontSize:</span>
+			    <select class="fontsize">
+				<option>10</option>
+				<option>12</option>
+				<option>14</option>
+				<option>16</option>
+			    </select>
+			  </div>
+			</fieldset>
+		    </form>
+		    <div class="resfield"></div><!-- Information added automaticaly -->
+		</div>
+	    <div id="collapsible"></div>
+	  </div>
            <div class="text">
-             <textarea class="emptex" id="emptex" wrap="off"></textarea>
+            <textarea class="emptex" id="emptex" wrap="off" width=100% height=100%></textarea>
            </div>
 
         </div>

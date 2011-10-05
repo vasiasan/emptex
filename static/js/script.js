@@ -1,21 +1,3 @@
-/*
-function wow() {
-    var i = $('#in'),
-        a = $('#area');
-    var s = i.val();
-    var new_s = String();
-    for (var i = 0; i < s.length; i++){
-        if (s[i] == '\\')
-          switch (s[i + 1]) {
-            case 'n': { new_s += "\n"; i++; continue; }
-            case 't': { new_s += "\t"; i++; continue; }
-          }
-      new_s += s[i];
-    
-    }
-    a.val(new_s);
-}
-*/
 (function($) {
 	$.fn.slctr = function(start, end){
     		//alert(this.val());
@@ -136,9 +118,9 @@ function wow() {
 			// because replace in multistring mode change not only finded
 			if ( chngp == "*" )
 			  for (var i in from){
-				( from[i][0] < ftp ) ? continue : ;
-				( from[i][0] == ftp ) ? break : ;
-				( from[i][0] > ftp ) ? return ft : ;
+				if ( from[i][0] < ftp ) continue;
+				if ( from[i][0] == ftp ) break;
+				if ( from[i][0] > ftp ) return ft;
 			  }
 
 			var ind = 0, fi = 0;
@@ -187,6 +169,39 @@ function wow() {
 		  return RegExp ( (patt + '').replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&'), flags );
 		return RegExp ( patt, flags );
 	}
+
+	//replace control characters to their codes
+	$.contrCharForm = function ( inp ){
+	    var outp = new String;
+	    for (var i = 0; i < inp.length; i++){
+		if (inp[i] == '\\')
+		    switch (inp[i + 1]) {
+			case 'n': { outp += "\n"; i++; continue; }
+			case 't': { outp += "\t"; i++; continue; }
+		    }
+		outp += inp[i];
+	    }
+	    return outp;
+	}
+	$.fn.enableTab = function() {
+            return this.keydown( function( e ) {
+		var $this = $( this );
+		if( e.keyCode === 9 && !e.ctrlKey && !e.altKey ) {
+		    var scroll = $this.scrollTop(),
+			start  = $this.prop( "selectionStart" ),
+			end    = $this.prop( "selectionEnd" );
+
+		    $(this).val( $this.val().substring( 0, start )
+		    		+ "\t"
+		    		+ $this.val().substring( end ) )
+			.prop( { selectionStart: start + 1, selectionEnd: start + 1 } )
+			   .focus()
+			   .scrollTop( scroll );
+
+		    e.preventDefault();
+		}
+	});
+    };
 })(jQuery);
 
 jQuery(function(){
@@ -228,13 +243,15 @@ jQuery(function(){
 						var direction = "<";
 						break;
 					}
+					var replaceForm = $.contrCharForm( $(".replace").val() );
+
 					var CurPos = $.getCurPos( $(".emptex") );
 					
 					var finded = [];
 					$('.emptex').tsearcher( re, finded );
 					if (! nslctn ) var nslctn = $.nslctr(CurPos,finded, direction);
 					
-					$(".emptex").val( $(".emptex").val().replace( re, $.placeRe( $(".replace").val(), finded, nslctn ) ) );
+					$(".emptex").val( $(".emptex").val().replace( re, $.placeRe( replaceForm, finded, nslctn ) ) );
 					$('.resfield').html( finded.join( "<br />" ) );
 					console.log( $(this).val(), CurPos, nslctn );
 				})
@@ -250,6 +267,9 @@ jQuery(function(){
 		}
 	});
 	*/
+	$('.fontfamily').change( function(){ $('.emptex').css('font-family', $(this).val() ); } );
+	$('.fontsize').change( function(){ $('.emptex').css('font-size', $(this).val()+"px" ); } )
+	//document.getElementById("select").scrollHeight	$(this).outerHeight()
 });
 
 // Left panel
@@ -259,7 +279,7 @@ jQuery(function(){
 	    if (b.length)
 		var i = jQuery('#collapsible');
 
-            jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "-5px");
+            //jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "-5px");
             
             i.mouseover(function (r) {
                 i.addClass("hover");
@@ -270,10 +290,11 @@ jQuery(function(){
                 d.toggle();
                 if (d.is(":visible")) {
                     b.css("margin-left", "");
-                    jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "-5px")
+                    //jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "-5px")
                 } else {
                     b.css("margin-left", "7px");
-                    jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "")
+                    //jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "")
                 }
             });
+	$(".emptex").enableTab();
 })

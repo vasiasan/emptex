@@ -19,6 +19,69 @@
 		    }
             });
 	}
+	$.fn.getSelection = function() {
+            var e = this.jquery ? this[0] : this;
+            
+            return (
+                /* mozilla / dom 3.0 */
+                ('selectionStart' in e && function() {
+                    var l = e.selectionEnd - e.selectionStart;
+                    return {
+                        start: e.selectionStart,
+                        end: e.selectionEnd,
+                        length: l,
+                        text: e.value.substr(e.selectionStart, l)};
+                })
+                
+                /* exploder */
+                || (document.selection && function() {
+                    e.focus();
+                    
+                    var r = document.selection.createRange();
+                    if (r == null) {
+                        return {
+                            start: 0,
+                            end: e.value.length,
+                            length: 0};
+                    }
+                    
+                    var re = e.createTextRange();
+                    var rc = re.duplicate();
+                    re.moveToBookmark(r.getBookmark());
+                    rc.setEndPoint('EndToStart', re);
+                    
+                    // IE bug - it counts newline as 2 symbols when getting selection coordinates,
+                    //  but counts it as one symbol when setting selection
+                    var rcLen = rc.text.length,
+                        i,
+                        rcLenOut = rcLen;
+                    for (i = 0; i < rcLen; i++) {
+                        if (rc.text.charCodeAt(i) == 13) rcLenOut--;
+                    }
+                    var rLen = r.text.length,
+                        rLenOut = rLen;
+                    for (i = 0; i < rLen; i++) {
+                        if (r.text.charCodeAt(i) == 13) rLenOut--;
+                    }
+                    
+                    return {
+                        start: rcLenOut,
+                        end: rcLenOut + rLenOut,
+                        length: rLenOut,
+                        text: r.text};
+                })
+                
+                /* browser not supported */
+                || function() {
+                    return {
+                        start: 0,
+                        end: e.value.length,
+                        length: 0};
+                }
+
+            )();
+        }
+
 
 	$.fn.tsearcher = function(re, finded){
 		//appndr.contents().remove();
@@ -32,7 +95,7 @@
 				continue;
 			}
 			li = re.lastIndex;
-			finded.push([ result.index, li, result[0] ]);
+			finded.push([ result.index, result[0] ]);
 			//appndr.append('<p>'+ result[0] +' ('+ result.index +')</p>');
 		}
 		return this;
@@ -41,24 +104,24 @@
 	$.getCurPos = function(TextArea) {
             var e = TextArea.jquery ? TextArea[0] : TextArea;
             
-	if ( e.selectionStart ) {
-	    return e.selectionStart;
-	} else if (document.selection) {
-	    e.focus();
+		if ( e.selectionStart ) {
+		    return e.selectionStart;
+		} else if (document.selection) {
+		    e.focus();
 
-	    var r = document.selection.createRange();
-	    if (r == null) {
-	      return 0;
-	    }
+		    var r = document.selection.createRange();
+		    if (r == null) {
+		      return 0;
+		    }
 
-	    var re = e.createTextRange(),
-		rc = re.duplicate();
-	    re.moveToBookmark(r.getBookmark());
-	    rc.setEndPoint('EndToStart', re);
+		    var re = e.createTextRange(),
+			rc = re.duplicate();
+		    re.moveToBookmark(r.getBookmark());
+		    rc.setEndPoint('EndToStart', re);
 
-	    return rc.text.length;
-	}  
-	return 0;
+		    return rc.text.length;
+		}  
+		return 0;
 
 	}
 
@@ -92,9 +155,9 @@
 		var finded = [];
 		var CurPos = $.getCurPos(text)
 		text.tsearcher( searchpatt, finded );
-		field.html( finded.join( "<br />" ) );
+		//field.html( finded.join( "<br />" ) );
 		var nslctn = $.nslctr(CurPos,finded, direction);
-		if ( nslctn ) text.slctr( nslctn[0], nslctn[0] + nslctn[2].length );
+		if ( nslctn ) text.slctr( nslctn[0], nslctn[0] + nslctn[1].length );
 		return finded;
 	}
 
@@ -183,25 +246,6 @@
 	    }
 	    return outp;
 	}
-	$.fn.enableTab = function() {
-            return this.keydown( function( e ) {
-		var $this = $( this );
-		if( e.keyCode === 9 && !e.ctrlKey && !e.altKey ) {
-		    var scroll = $this.scrollTop(),
-			start  = $this.prop( "selectionStart" ),
-			end    = $this.prop( "selectionEnd" );
-
-		    $(this).val( $this.val().substring( 0, start )
-		    		+ "\t"
-		    		+ $this.val().substring( end ) )
-			.prop( { selectionStart: start + 1, selectionEnd: start + 1 } )
-			   .focus()
-			   .scrollTop( scroll );
-
-		    e.preventDefault();
-		}
-	});
-    };
 })(jQuery);
 
 jQuery(function(){
@@ -252,8 +296,7 @@ jQuery(function(){
 					if (! nslctn ) var nslctn = $.nslctr(CurPos,finded, direction);
 					
 					$(".emptex").val( $(".emptex").val().replace( re, $.placeRe( replaceForm, finded, nslctn ) ) );
-					$('.resfield').html( finded.join( "<br />" ) );
-					console.log( $(this).val(), CurPos, nslctn );
+					//console.log( $(this).val(), CurPos, nslctn );
 				})
 	/* // default button for enter on form
 	$(“form input, form select”).live(‘keypress’, function (e) {
@@ -269,6 +312,8 @@ jQuery(function(){
 	*/
 	$('.fontfamily').change( function(){ $('.emptex').css('font-family', $(this).val() ); } );
 	$('.fontsize').change( function(){ $('.emptex').css('font-size', $(this).val()+"px" ); } )
+
+
 	//document.getElementById("select").scrollHeight	$(this).outerHeight()
 });
 
@@ -296,5 +341,4 @@ jQuery(function(){
                     //jQuery.browser.msie && jQuery.browser.version < 7 && b.css("left", "")
                 }
             });
-	$(".emptex").enableTab();
 })

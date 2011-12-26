@@ -16,12 +16,9 @@
     
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
 
     <script>!window.jQuery && document.write(unescape('%3Cscript src="js/libs/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
-    <script type="text/javascript" src="/js/libs/jquery.textchange.min.js"></script>
     <script src="/js/plugins.js"></script>
     <script src="/js/script.js"></script>
     <!--[if lt IE 7 ]>
@@ -51,17 +48,13 @@
 	<div id="main" role="main">
 	    <div class="panelwrap">
 		<div class="panel">
-		    <div class="status">
-			<div class="half"><span>row: </span><span class="row">0</span></div>
-			<div class="half"><span>col: </span><span class="col">0</span></div>
-		    </div>
-		    <form>
+		    <form class="forma">
 			<fieldset><legend>Search</legend><p>
 			    <input class="search" type="text" />
 			    <div class="formwrap">
-				<label class="label"><span>Ignore case</span><input type="checkbox" class="ignorecase" /></label>
-				<label class="label"><span>Multiline</span><input type="checkbox" class="multiline" /></label>
-				<label class="label"><span>RegExp</span><input type="checkbox" class="regexp" /></label>
+				<label class="label"><span>Ignore case</span><input type="checkbox" class="ignorecase" /></label><br />
+				<label class="label"><span>Multiline</span><input type="checkbox" class="multiline" /></label><br />
+				<label class="label"><span>RegExp</span><input type="checkbox" class="regexp" /></label><br />
 			    </div>
 			    <div class="formwrap">
 				<input type="button" value="←" class="psrchr" />
@@ -76,12 +69,6 @@
 				<input type="button" value="→" class="chngr" />
 			    </div>
 			</fieldset>
-			<fieldset><legend>Undo-Redo</legend><p>
-			    <div class="formwrap">
-				<input type="button" value="⇐ undo" class="undo" />
-				<input type="button" value="redo ⇒" class="redo" />
-			    </div>
-			</fieldset>
 		        <fieldset><legend>Fonts</legend><p>
 		          <div class="formwrap">
 			    <span class="label">Font:</span>
@@ -89,18 +76,18 @@
 				<option>Monospace</option>
 				<option>Arial</option>
 				<option>Tahoma</option>
-			    </select>
+			    </select><br />
 			    <span class="label">FontSize:</span>
 			    <select class="fontsize">
 				<option>10</option>
 				<option>12</option>
-				<option>14</option>
+				<option selected="true">14</option>
 				<option>16</option>
 			    </select>
 			  </div>
 			</fieldset>
 		    </form>
-		    <div class="resfield"></div><!-- Information added automaticaly -->
+			<div class="resfield"></div> <!-- Information added automaticaly -->
 		</div>
 	    <div id="collapsible"></div>
 	  </div>
